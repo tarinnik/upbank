@@ -1,28 +1,30 @@
-use crate::common::{Links, SelfLink};
+use crate::{
+    common::{Links, SelfLink},
+    currencies::currency_map,
+};
+use chrono::{DateTime, FixedOffset};
 use serde::Deserialize;
 
-#[derive(Deserialize)]
-pub struct Accounts {
+#[derive(Deserialize, Debug)]
+pub struct AccountList {
     pub data: Vec<AccountData>,
     pub links: Links,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct Account {
     pub data: AccountData,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct AccountData {
-    #[serde(rename = "type")]
-    pub account_type: String,
     pub id: String,
     pub attributes: AccountAttributes,
     pub relationships: AccountRelationships,
     pub links: Option<SelfLink>,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct AccountAttributes {
     #[serde(rename = "displayName")]
     pub display_name: String,
@@ -32,10 +34,10 @@ pub struct AccountAttributes {
     pub ownership_type: AccountOwnership,
     pub balance: AccountBalance,
     #[serde(rename = "createdAt")]
-    pub created_at: String,
+    pub created_at: DateTime<FixedOffset>,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub enum AccountType {
     #[serde(rename = "SAVER")]
     Saver,
@@ -45,7 +47,7 @@ pub enum AccountType {
     HomeLoan,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub enum AccountOwnership {
     #[serde(rename = "INDIVIDUAL")]
     Individual,
@@ -53,26 +55,17 @@ pub enum AccountOwnership {
     Joint,
 }
 
-#[derive(Deserialize)]
-pub struct AccountBalance {
-    #[serde(rename = "currentCode")]
-    pub currency_code: String,
-    pub value: String,
-    #[serde(rename = "valueInBaseUnits")]
-    pub base_value: i64,
-}
-
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct AccountRelationships {
     pub transactions: AccountTransactions,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct AccountTransactions {
     pub links: Option<AccountTransactionsLink>,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct AccountTransactionsLink {
     pub related: String,
 }

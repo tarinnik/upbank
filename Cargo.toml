@@ -4,6 +4,12 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+axum = { version = "0.7.7", default-features = false, optional = true }
+chrono = { version = "0.4.38", default-features = false, features = ["serde"] }
+doubloon = "0.2.0"
 reqwest = { version = "0.12.9", features = ["json"] }
 serde = { version = "1.0.214", features = ["derive"] }
 thiserror = "1.0.66"
+
+[features]
+axum = ["dep:axum"]
