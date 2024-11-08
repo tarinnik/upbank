@@ -13,6 +13,8 @@ pub enum Error {
     Up(#[from] UpError),
     #[error("request error")]
     Request(#[from] reqwest::Error),
+    #[error("other error")]
+    Other,
 }
 
 #[cfg(feature = "axum")]
@@ -25,6 +27,7 @@ impl IntoResponse for Error {
                 let body = format!("{}", req);
                 (code, body).into_response()
             }
+            Error::Other => (StatusCode::INTERNAL_SERVER_ERROR, "other").into_response(),
         }
     }
 }

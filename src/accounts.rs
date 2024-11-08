@@ -1,7 +1,4 @@
-use crate::{
-    common::{Links, SelfLink},
-    currencies::currency_map,
-};
+use crate::common::{Amount, Links, SelfLink};
 use chrono::{DateTime, FixedOffset};
 use serde::Deserialize;
 
@@ -9,6 +6,19 @@ use serde::Deserialize;
 pub struct AccountList {
     pub data: Vec<AccountData>,
     pub links: Links,
+}
+
+impl AccountList {
+    /// Gets the ID of the first transaction account if one exists.
+    pub fn transaction_account_id(&self) -> Option<&String> {
+        Some(
+            &self
+                .data
+                .iter()
+                .find(|acc| acc.attributes.account_type == AccountType::Transactional)?
+                .id,
+        )
+    }
 }
 
 #[derive(Deserialize, Debug)]
@@ -32,12 +42,12 @@ pub struct AccountAttributes {
     pub account_type: AccountType,
     #[serde(rename = "ownershipType")]
     pub ownership_type: AccountOwnership,
-    pub balance: AccountBalance,
+    pub balance: Amount,
     #[serde(rename = "createdAt")]
     pub created_at: DateTime<FixedOffset>,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, PartialEq)]
 pub enum AccountType {
     #[serde(rename = "SAVER")]
     Saver,

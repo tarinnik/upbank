@@ -24,11 +24,23 @@ pub struct Amount {
 }
 
 impl Amount {
+    /// Formats the amount with the correct currency symbol
     pub fn formatted_value(&self) -> Option<String> {
-        let currencies = currency_map();
-        let currency = currencies.get(&self.currency_code)?;
-        Money::from_minor_units(self.base_value, currency)
-            .format(&Formatter::default())
-            .ok()
+        format_amount(self.base_value, &self.currency_code)
     }
+
+    /// Formats the absoluate value of the amount with correct
+    /// currency symbol
+    pub fn formatted_abs_value(&self) -> Option<String> {
+        let amount = self.base_value.abs();
+        format_amount(amount, &self.currency_code)
+    }
+}
+
+fn format_amount(amount: i64, currency_code: &String) -> Option<String> {
+    let currencies = currency_map();
+    let currency = currencies.get(currency_code)?;
+    Money::from_minor_units(amount, currency)
+        .format(&Formatter::default())
+        .ok()
 }
